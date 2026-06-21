@@ -1,5 +1,27 @@
 # Steam Market Analytics Platform
 
-Graduation Thesis Project
+Data Warehouse and Business Intelligence platform for analyzing Steam game market trends.
 
-Data Pipeline + Data Warehouse + Power BI Dashboard for Steam Market Analysis
+## Technology Stack
+
+- Python
+- PostgreSQL
+- Docker
+- Apache Airflow
+- Power BI
+- SteamSpy API
+
+## Architecture
+
+SteamSpy API
+→ Raw Layer
+→ Staging Layer
+→ Data Warehouse
+→ Power BI Dashboard
+
+## Features
+
+- Automated ETL Pipeline
+- Historical Snapshot Tracking
+- Market Trend Analysis
+- Steam Game Analytics Dashboard
