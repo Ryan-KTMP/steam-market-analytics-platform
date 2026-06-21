@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+.venv/
+venv/
+
+# Environment Variables
+.env
+.env.airflow
+
+# Logs
+logs/
+*.log
+
+# Airflow
+airflow/logs/
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Docker
+docker-data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+data/raw/*.json
+
+note.txt
