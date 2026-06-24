@@ -113,7 +113,7 @@ def load_to_staging():
                 %s,%s,%s,%s,%s,%s,%s,%s,%s,%s
             )
             ON CONFLICT (app_id)
-            DO NOTHING;
+            DO UPDATE;
             """,
             (
                 app_id,

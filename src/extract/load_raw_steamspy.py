@@ -11,17 +11,33 @@ from psycopg2.extras import Json
 from src.common.db import get_connection
 
 
-INPUT_FILE = Path("data/raw/steamspy_page_0.json")
+RAW_FOLDER = Path("data/raw")
 
 
-def load_json() -> dict:
-    with open(INPUT_FILE, "r", encoding="utf-8") as file:
+def get_json_files():
+
+    return sorted(
+        RAW_FOLDER.glob(
+            "steamspy_page_*.json"
+        )
+    )
+
+
+def load_json(file_path: Path) -> dict:
+
+    with open(
+        file_path,
+        "r",
+        encoding="utf-8"
+    ) as file:
+
         return json.load(file)
 
 
 def insert_raw_games(data: dict) -> int:
 
     conn = get_connection()
+
     cursor = conn.cursor()
 
     inserted = 0
@@ -67,6 +83,7 @@ def insert_raw_games(data: dict) -> int:
     finally:
 
         cursor.close()
+
         conn.close()
 
 
@@ -74,11 +91,32 @@ def main() -> None:
 
     logging.basicConfig(level=logging.INFO)
 
-    data = load_json()
+    total_inserted = 0
 
-    inserted = insert_raw_games(data)
+    json_files = get_json_files()
 
-    logging.info("Inserted rows: %s", inserted)
+    logging.info(
+        "Files found: %s",
+        len(json_files)
+    )
+
+    for file_path in json_files:
+
+        logging.info(
+            "Processing %s",
+            file_path.name
+        )
+
+        data = load_json(file_path)
+
+        inserted = insert_raw_games(data)
+
+        total_inserted += inserted
+
+    logging.info(
+        "TOTAL INSERTED: %s",
+        total_inserted
+    )
 
 
 if __name__ == "__main__":

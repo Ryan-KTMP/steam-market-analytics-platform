@@ -1,21 +1,25 @@
 """
-SteamSpy Extractor V1
+SteamSpy Extractor
 
 Purpose:
-    Extract raw data from SteamSpy API.
+    Extract multiple pages from SteamSpy API
+    and save raw JSON files locally.
 """
 
 from pathlib import Path
 import json
 import logging
+import time
 
 import requests
 
 
 STEAMSPY_URL = "https://steamspy.com/api.php"
 
+MAX_PAGE = 30
 
-def fetch_all_games_page(page: int = 0) -> dict:
+
+def fetch_all_games_page(page: int) -> dict:
     """
     Fetch one page from SteamSpy.
 
@@ -46,11 +50,23 @@ def save_raw_json(data: dict, page: int) -> Path:
     """
 
     output_dir = Path("data/raw")
-    output_dir.mkdir(parents=True, exist_ok=True)
 
-    output_file = output_dir / f"steamspy_page_{page}.json"
+    output_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
-    with open(output_file, "w", encoding="utf-8") as file:
+    output_file = (
+        output_dir /
+        f"steamspy_page_{page}.json"
+    )
+
+    with open(
+        output_file,
+        "w",
+        encoding="utf-8",
+    ) as file:
+
         json.dump(
             data,
             file,
@@ -63,19 +79,48 @@ def save_raw_json(data: dict, page: int) -> Path:
 
 def main() -> None:
 
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
-    page = 0
+    total_games = 0
 
-    logging.info("Fetching SteamSpy page %s", page)
+    for page in range(MAX_PAGE):
 
-    data = fetch_all_games_page(page)
+        logging.info(
+            "Fetching SteamSpy page %s",
+            page,
+        )
 
-    logging.info("Games returned: %s", len(data))
+        data = fetch_all_games_page(page)
 
-    output_file = save_raw_json(data, page)
+        games_count = len(data)
 
-    logging.info("Saved file: %s", output_file)
+        total_games += games_count
+
+        output_file = save_raw_json(
+            data,
+            page,
+        )
+
+        logging.info(
+            "Page %s -> %s games",
+            page,
+            games_count,
+        )
+
+        logging.info(
+            "Saved file: %s",
+            output_file,
+        )
+
+        time.sleep(1)
+
+    logging.info(
+        "TOTAL GAMES COLLECTED: %s",
+        total_games,
+    )
 
 
 if __name__ == "__main__":
