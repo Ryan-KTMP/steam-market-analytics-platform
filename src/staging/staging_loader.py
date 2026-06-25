@@ -113,7 +113,16 @@ def load_to_staging():
                 %s,%s,%s,%s,%s,%s,%s,%s,%s,%s
             )
             ON CONFLICT (app_id)
-            DO UPDATE;
+            DO UPDATE SET
+                game_name = EXCLUDED.game_name,
+                owners_min = EXCLUDED.owners_min,
+                owners_max = EXCLUDED.owners_max,
+                positive_reviews = EXCLUDED.positive_reviews,
+                negative_reviews = EXCLUDED.negative_reviews,
+                review_total = EXCLUDED.review_total,
+                review_score_pct = EXCLUDED.review_score_pct,
+                price = EXCLUDED.price,
+                ccu = EXCLUDED.ccu;
             """,
             (
                 app_id,
